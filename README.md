@@ -38,23 +38,23 @@
   ├── common/
   │   ├── config/              # Конфигурация БД
   │   ├── models/              # Translator и TranslatorBooking
-  <p>│   ├── services/            # TranslatorService</p>
-  <p>├── console/</p>
-  <p>│   ├── migrations/          # Миграции create_translator_table и create_translator_booking_table</p>
-  <p>├── frontend/</p>
-  <p>│   ├── config/              # Конфигурация приложения</p>
-  <p>│   ├── controllers/         # TranslatorController</p>
-  <p>│   ├── modules/             # Модуль api</p>
-  <p>│   ├── views/</p>
-  <p>│       ├── translator/      # index.php</p>
-  <p>│   ├── web/</p>
-  <p>│       ├── css/             # app.css</p>
-  <p>│       ├── js/              # приложение, утилиты, компоненты/p>
-  <p>├── docker/                  # Dockerfile, entrypoint</p>
-  <p>├── docker-compose.yml</p>
-  <p>├── .env</p>
-  <p>├── .env.example</p>
-  <p>└── README.md</p>
+  │   ├── services/            # TranslatorService
+  ├── console/
+  │   ├── migrations/          # Миграции create_translator_table и create_translator_booking_table
+  ├── frontend/
+  │   ├── config/              # Конфигурация приложения
+  │   ├── controllers/         # TranslatorController
+  │   ├── modules/             # Модуль api
+  │   ├── views/
+  │       ├── translator/      # index.php
+  │   ├── web/
+  │       ├── css/             # app.css
+  │       ├── js/              # приложение, утилиты, компоненты
+  ├── docker/                  # Dockerfile, entrypoint
+  ├── docker-compose.yml
+  ├── .env
+  ├── .env.example
+  └── README.md
 </pre>
 
 <br>
