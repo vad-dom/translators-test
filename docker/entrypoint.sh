@@ -15,11 +15,11 @@ if [ ! -f "/app/yii" ]; then
   php init --env=Development --overwrite=0
 fi
 
-# Удаляем main-local.php, чтобы он не перебивал DB из main.php
-if [ -f "/app/common/config/main-local.php" ]; then
-  echo "🧹 Удаляю common/config/main-local.php (Docker-safe)..."
-  rm /app/common/config/main-local.php
-fi
+echo "🧩 Делаю common/config/main-local.php минимальным (чтобы не трогал БД)..."
+cat > /app/common/config/main-local.php <<'PHP'
+<?php
+return [];
+PHP
 
 # 2) Установка зависимостей (если vendor не существует)
 if [ ! -d "/app/vendor" ]; then
