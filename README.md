@@ -35,9 +35,9 @@
 
 <h2>📂 Структура проекта</h2>
 <pre>
-  <p>├── common/</p>
-  <p>│   ├── config/              # Конфигурация БД</p>
-  <p>│   ├── models/              # Translator и TranslatorBooking</p>
+  ├── common/
+  │   ├── config/              # Конфигурация БД
+  │   ├── models/              # Translator и TranslatorBooking
   <p>│   ├── services/            # TranslatorService</p>
   <p>├── console/</p>
   <p>│   ├── migrations/          # Миграции create_translator_table и create_translator_booking_table</p>
