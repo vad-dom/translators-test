@@ -1,5 +1,8 @@
 <?php
 
+use yii\caching\FileCache;
+use yii\db\Connection;
+
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -8,10 +11,10 @@ return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
-            'class' => \yii\caching\FileCache::class,
+            'class' => FileCache::class,
         ],
         'db' => [
-            'class' => \yii\db\Connection::class,
+            'class' => Connection::class,
             'dsn' => 'mysql:host=' . (getenv('DB_HOST') ?: 'db')
                 . ';dbname=' . (getenv('DB_NAME') ?: 'translators_test'),
             'username' => getenv('DB_USER') ?: 'root',

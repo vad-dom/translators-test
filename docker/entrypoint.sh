@@ -9,13 +9,6 @@ until mysqladmin ping -h"$DB_HOST" --silent; do
 done
 echo "✅ MySQL доступен."
 
-# 1) Инициализация advanced (если проект не инициализирован)
-# Обычно признак — отсутствие common/config/main-local.php
-if [ ! -f "/app/common/config/main-local.php" ]; then
-  echo "🧩 Yii2 Advanced init..."
-  php init --env=Development --overwrite=All
-fi
-
 # 2) Установка зависимостей (если vendor не существует)
 if [ ! -d "/app/vendor" ]; then
   echo "📦 Composer install..."
