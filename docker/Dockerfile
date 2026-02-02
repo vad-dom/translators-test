@@ -19,7 +19,7 @@ RUN a2enmod rewrite
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Код приложения внутрь образа (важно: НЕ монтируем весь проект с Windows)
+# Код приложения внутрь образа (не монтируем весь проект с Windows)
 WORKDIR /app
 COPY . /app
 

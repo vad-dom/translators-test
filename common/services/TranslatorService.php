@@ -4,18 +4,32 @@ namespace common\services;
 
 use common\models\Translator;
 use common\models\TranslatorBooking;
+use DateTimeImmutable;
+use RuntimeException;
 use Yii;
+use yii\db\Exception;
 use yii\db\IntegrityException;
+use yii\db\StaleObjectException;
 
 class TranslatorService
 {
     public const DATES_PAGE_SIZE = 30;
 
+    /**
+     * @return array
+     */
     public function listTranslators(): array
     {
         return Translator::find()->orderBy(['name' => SORT_ASC])->asArray()->all();
     }
 
+    /**
+     * @param string $name
+     * @param int $workMode
+     * @param string $bookableUntil
+     * @return Translator
+     * @throws Exception
+     */
     public function createTranslator(string $name, int $workMode, string $bookableUntil): Translator
     {
         $t = new Translator();
@@ -24,11 +38,19 @@ class TranslatorService
         $t->bookable_until = $bookableUntil;
 
         if (!$t->save()) {
-            throw new \RuntimeException('Validation error: ' . json_encode($t->errors, JSON_UNESCAPED_UNICODE));
+            throw new RuntimeException(
+                'Validation error: ' . json_encode($t->errors, JSON_UNESCAPED_UNICODE)
+            );
         }
         return $t;
     }
 
+    /**
+     * @param int $id
+     * @return void
+     * @throws \Throwable
+     * @throws StaleObjectException
+     */
     public function deleteTranslator(int $id): void
     {
         $t = Translator::findOne($id);
@@ -38,18 +60,25 @@ class TranslatorService
         $t->delete();
     }
 
+    /**
+     * @param int $translatorId
+     * @param int $offsetDays
+     * @param int $limitDays
+     * @return array
+     * @throws \Exception
+     */
     public function getCalendarChunk(int $translatorId, int $offsetDays, int $limitDays = self::DATES_PAGE_SIZE): array
     {
         $t = Translator::findOne($translatorId);
         if (!$t) {
-            throw new \RuntimeException('Translator not found');
+            throw new RuntimeException('Translator not found');
         }
 
-        $today = (new \DateTimeImmutable('today'))->format('Y-m-d');
-        $start = (new \DateTimeImmutable($today))->modify("+{$offsetDays} days");
+        $today = (new DateTimeImmutable('today'))->format('Y-m-d');
+        $start = (new DateTimeImmutable($today))->modify("+{$offsetDays} days");
         $end = $start->modify('+' . ($limitDays - 1) . ' days');
 
-        $bookableUntil = new \DateTimeImmutable($t->bookable_until);
+        $bookableUntil = new DateTimeImmutable($t->bookable_until);
         if ($start > $bookableUntil) {
             return [
                 'translator' => $this->translatorToArray($t),
@@ -97,6 +126,12 @@ class TranslatorService
         ];
     }
 
+    /**
+     * @param int $translatorId
+     * @param string $date
+     * @return void
+     * @throws Exception
+     */
     public function bookDay(int $translatorId, string $date): void
     {
         $sql = 'INSERT INTO {{%translator_booking}} (translator_id, `date`)
@@ -108,15 +143,25 @@ class TranslatorService
                 ':date' => $date,
             ])->execute();
         } catch (IntegrityException $e) {
-            throw new \RuntimeException('DATE_ALREADY_BUSY');
+            throw new RuntimeException('DATE_ALREADY_BUSY');
         }
     }
 
+    /**
+     * @param int $translatorId
+     * @param string $date
+     * @return int
+     */
     public function unbookDay(int $translatorId, string $date): int
     {
         return TranslatorBooking::deleteAll(['translator_id' => $translatorId, 'date' => $date]);
     }
 
+    /**
+     * @param string $date
+     * @return string
+     * @throws \Exception
+     */
     public function availabilityPhrase(string $date): string
     {
         $isWeekend = $this->isWeekend($date);
@@ -144,13 +189,22 @@ class TranslatorService
         return $row ? 'Список переводчиков готов' : 'Нет свободных переводчиков';
     }
 
+    /**
+     * @param string $date
+     * @return bool
+     * @throws \Exception
+     */
     private function isWeekend(string $date): bool
     {
-        $dt = new \DateTimeImmutable($date);
+        $dt = new DateTimeImmutable($date);
         $n = (int)$dt->format('N');
         return $n >= 6;
     }
 
+    /**
+     * @param Translator $t
+     * @return array
+     */
     private function translatorToArray(Translator $t): array
     {
         return [

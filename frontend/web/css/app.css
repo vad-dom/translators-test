@@ -55,6 +55,7 @@ input, select, button {
 
 button {
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);;
 }
 
 button:disabled {
@@ -88,8 +89,10 @@ button:disabled {
 
 .hr { border-top: 1px solid #eee; margin: 12px 0; }
 
-.msgOk { color: var(--ok); margin-top: 8px; }
-.msgErr { color: var(--danger); margin-top: 8px; }
+.msg { margin-top: 8px; }
+.msgOk { color: var(--ok); }
+.msgErr { color: var(--danger); }
+.msgMuted { color: var(--muted); }
 
 .calendarRow {
     display: flex;

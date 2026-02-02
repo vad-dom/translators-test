@@ -85,8 +85,9 @@ export default {
 
       <div class="card" style="margin-bottom:16px;">
         <TranslatorForm @create="onCreateTranslator" />
-        <div v-if="error" class="msgErr">{{ error }}</div>
-        <div v-if="info" class="msgOk">{{ info }}</div>
+        <div v-if="error" class="msg msgErr">{{ error }}</div>
+        <div v-else-if="info" class="msg msgOk">{{ info }}</div>
+        <div v-else class="msg msgMuted">Здесь можно увидеть статус выполнения операций</div>
       </div>
 
       <div class="grid">

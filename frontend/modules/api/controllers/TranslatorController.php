@@ -4,6 +4,10 @@ namespace frontend\modules\api\controllers;
 
 use common\services\TranslatorService;
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use yii\db\StaleObjectException;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
 class TranslatorController extends Controller
@@ -18,17 +22,30 @@ class TranslatorController extends Controller
         parent::__construct($id, $module, $config);
     }
 
-    public function beforeAction($action)
+    /**
+     * @param $action
+     * @return bool
+     * @throws BadRequestHttpException
+     */
+    public function beforeAction($action): bool
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return parent::beforeAction($action);
     }
 
+    /**
+     * @return array
+     */
     public function actionList(): array
     {
         return ['items' => $this->service->listTranslators()];
     }
 
+    /**
+     * @return array
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
     public function actionCreate(): array
     {
         $body = Yii::$app->request->getBodyParams();
@@ -48,17 +65,35 @@ class TranslatorController extends Controller
         ];
     }
 
+    /**
+     * @param int $id
+     * @return true[]
+     * @throws \Throwable
+     * @throws StaleObjectException
+     */
     public function actionDelete(int $id): array
     {
         $this->service->deleteTranslator($id);
         return ['ok' => true];
     }
 
+    /**
+     * @param int $id
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     * @throws \Exception
+     */
     public function actionCalendar(int $id, int $offset = 0, int $limit = TranslatorService::DATES_PAGE_SIZE): array
     {
         return $this->service->getCalendarChunk($id, $offset, $limit);
     }
 
+    /**
+     * @return array|true[]
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function actionBook(): array
     {
         $body = Yii::$app->request->getBodyParams();
@@ -81,6 +116,10 @@ class TranslatorController extends Controller
         }
     }
 
+    /**
+     * @return array
+     * @throws InvalidConfigException
+     */
     public function actionUnbook(): array
     {
         $body = Yii::$app->request->getBodyParams();
@@ -88,6 +127,11 @@ class TranslatorController extends Controller
         return ['ok' => true, 'deleted' => $count];
     }
 
+    /**
+     * @param string $date
+     * @return array
+     * @throws \Exception
+     */
     public function actionAvailability(string $date): array
     {
         return ['phrase' => $this->service->availabilityPhrase($date)];

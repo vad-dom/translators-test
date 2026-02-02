@@ -48,6 +48,7 @@ return [
         ],
     ],
     'params' => $params,
+    'defaultRoute' => 'translator/index',
     'modules' => [
         'api' => [
             'class' => \frontend\modules\api\Module::class,
