@@ -1,0 +1,19 @@
+# зависимости/артефакты
+vendor
+frontend/runtime
+frontend/web/assets
+backend/runtime
+backend/web/assets
+console/runtime
+
+# IDE
+.idea
+.vscode
+
+# system
+.DS_Store
+Thumbs.db
+
+# git
+.git
+.gitignore

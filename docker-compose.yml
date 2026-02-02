@@ -1,38 +1,81 @@
-version: '3.2'
-
 services:
-
   frontend:
-    build: frontend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        APP_WEBROOT: frontend/web
+    container_name: translators_frontend
     ports:
-      - 20080:80
-    volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
+      - "8080:80"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      YII_ENV: dev
+      YII_DEBUG: 1
+    depends_on:
+      - db
+    networks:
+      - translators_network
 
   backend:
-    build: backend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        APP_WEBROOT: backend/web
+    container_name: translators_backend
     ports:
-      - 21080:80
-    volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
-
-  mysql:
-    image: mysql:5.7
+      - "8081:80"
     environment:
-      - MYSQL_ROOT_PASSWORD=verysecret
-      - MYSQL_DATABASE=yii2advanced
-      - MYSQL_USER=yii2advanced
-      - MYSQL_PASSWORD=secret
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      YII_ENV: dev
+      YII_DEBUG: 1
+    depends_on:
+      - db
+    networks:
+      - translators_network
 
-  #pgsql:
-  #  image: postgres:9.5
-  #  environment:
-  #    - POSTGRES_DB=yii2advanced
-  #    - POSTGRES_USER=yii2advanced
-  #    - POSTGRES_PASSWORD=secret
+  db:
+    image: mysql:5.7
+    container_name: translators_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: translators_test
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_general_ci
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - translators_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: translators_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8082:80"
+    depends_on:
+      - db
+    networks:
+      - translators_network
+
+networks:
+  translators_network:
+    driver: bridge
+
+volumes:
+  db_data:
