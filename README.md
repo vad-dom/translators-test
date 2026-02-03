@@ -38,13 +38,13 @@
 <h2>📂 Структура проекта</h2>
 <pre>
   ├── common/
-  │   ├── config/              # Конфигурация БД
+  │   ├── config/              # Конфигурация БД в main.php
   │   ├── models/              # Translator и TranslatorBooking
   │   ├── services/            # TranslatorService
   ├── console/
   │   ├── migrations/          # Миграции create_translator_table и create_translator_booking_table
   ├── frontend/
-  │   ├── config/              # Конфигурация приложения
+  │   ├── config/              # Конфигурация приложения в main.php
   │   ├── controllers/         # TranslatorController
   │   ├── modules/             # Модуль api
   │   ├── views/
