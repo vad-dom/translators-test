@@ -173,17 +173,17 @@ class TranslatorService
                 WHERE b.id IS NULL
                   AND :date <= t.bookable_until
                   AND (
-                    (:isWeekend = 0 AND t.work_mode = :wmWeekdays)
+                    (:isWeekend = 0 AND t.work_mode = :wmWorkingDays)
                     OR
-                    (:isWeekend = 1 AND t.work_mode = :wmWeekends)
+                    (:isWeekend = 1 AND t.work_mode = :wmDaysOff)
                   )
                 LIMIT 1';
 
         $row = Yii::$app->db->createCommand($sql, [
             ':date' => $date,
             ':isWeekend' => $isWeekend ? 1 : 0,
-            ':wmWeekdays' => Translator::MODE_WORKING_DAYS,
-            ':wmWeekends' => Translator::MODE_DAYS_OFF,
+            ':wmWorkingDays' => Translator::MODE_WORKING_DAYS,
+            ':wmDaysOff' => Translator::MODE_DAYS_OFF,
         ])->queryOne();
 
         return $row ? 'Список переводчиков готов' : 'Нет свободных переводчиков';
